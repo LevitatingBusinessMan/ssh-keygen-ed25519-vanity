@@ -1,4 +1,4 @@
-# ssh-keygen-ed25519-vanity
+# ssh-keygen-ed25519-vanity (multithreaded)
 
 Finds a vanity EdDSA SSH public key (and corresponding private key, of course) by brute force.
 Requires `libsodium` to be installed to generate the raw Ed25519 keypair.
@@ -8,7 +8,7 @@ There is also a shell script that does basically the same thing but by actually 
 which is probably slower.
 
 NEW: There is now an additional Rust version, which can be compiled with `cargo build`,
-then run with `cargo run -- <substring> [private keyfile]`.
+then run with `cargo run -- <substring> [threads] [private keyfile]`.
 If no keyfile path is provided, the private key will be printed to stdout.
 
 This is already covered by the licence, but once again I am **not** responsible for your use of this code.
