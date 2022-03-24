@@ -36,8 +36,8 @@ fn get_sk(pk: &[u8], keypair: Keypair) -> String {
   buffer.write_bytes(pk);                     // public key
 
   let mut sk = ByteBuffer::new();
-  sk.write_u32(0xf0cacc1a);                   // check bytes
-  sk.write_u32(0xf0cacc1a);
+  sk.write_u32(0xb00bb00b);                   // check bytes
+  sk.write_u32(0xb00bb00b);
   sk.write_bytes(pk);                         // public key (again)
   sk.write_u32((SECRET_KEY_LENGTH + PUBLIC_KEY_LENGTH) as u32);
   sk.write_bytes(&keypair.secret.to_bytes()); // private key

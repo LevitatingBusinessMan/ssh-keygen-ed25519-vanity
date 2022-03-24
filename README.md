@@ -1,5 +1,9 @@
 # ssh-keygen-ed25519-vanity (multithreaded)
 
+NEW: There is now an additional Rust version, which can be compiled with `cargo build --release`,
+then run with `./target/release/vanity <substring> [threads] [private keyfile]`.
+If no keyfile path is provided, the private key will be printed to stdout.
+
 Finds a vanity EdDSA SSH public key (and corresponding private key, of course) by brute force.
 Requires `libsodium` to be installed to generate the raw Ed25519 keypair.
 Run `make` to compile to executable `vanity`,
@@ -7,17 +11,16 @@ then `./vanity <substring>` to find a public key with given substring.
 There is also a shell script that does basically the same thing but by actually running `ssh-keygen`,
 which is probably slower.
 
-NEW: There is now an additional Rust version, which can be compiled with `cargo build`,
-then run with `cargo run -- <substring> [threads] [private keyfile]`.
-If no keyfile path is provided, the private key will be printed to stdout.
-
 This is already covered by the licence, but once again I am **not** responsible for your use of this code.
 Don't @ me.
 (You can open an issue if there's any problems, with no guarantee that I'll look at it.)
 
 ## Handy commands
+```SH
+# Run the (multithreaded) rust version indefenitely,
+# saving each private key to /tmp (this script is also included as brute.sh).
+for (( i=1; ; i++)); do echo $i: $(./target/release/vanity <substring> <threads> /tmp/$i 2>/dev/null); done
 
-```sh
 # Pipe public key to <file>.pub and private key to <file>,
 # while displaying public key on stdout.
 ./vanity <substring> | tee >(head -n 1 > <file>.pub) >(tail -n 3 > <file>) | head -n 1
@@ -34,7 +37,7 @@ ssh-keygen -yf <file>
 I don't know what the two 4-byte check values are for.
 OpenSSH literally generates it just using `arc4random()`,
 but doesn't do anything with it except duplicate it.
-You can edit the source to use your favourite hex word; I'm using `0xf0cacc1a`.
+You can edit the source to use your favourite hex word; I'm using `0xb00bb00b`.
 
 The blocksize is [8](https://github.com/openssh/openssh-portable/blob/master/cipher.c#L110),
 and for [some reason](https://github.com/openssh/openssh-portable/blob/master/sshkey.c#L3972) the number of padding bytes is total modulo 16.
@@ -76,13 +79,14 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 Obviously since it's brute force the times are probabilistic,
 but this gives you an idea of how feasible it would be to find your desired number of characters.
 
+(4 threads 3.7Ghz)
 | Substring | Time (s) |
 | --------- | -------- |
-| a         | 0.002    |
-| ar        | 0.015    |
-| ars       | 0.501    |
-| arso      | 3.753    |
-| arson     | abandon all hope ye who seek five sequential characters |
+| s         | 0.000    |
+| st        | 0.000    |
+| sti       | 0.010    |
+| stin      | 2.507    |
+| sting     | 154.700  |
 
 ## References
 
